@@ -21,6 +21,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -64,6 +66,9 @@ import org.gnucash.android.ui.util.widget.EmptyRecyclerView;
 import org.gnucash.android.util.BackupManager;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,6 +81,9 @@ import butterknife.ButterKnife;
 public class TransactionsListFragment extends Fragment implements
         Refreshable, LoaderManager.LoaderCallbacks<Cursor> {
 
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler handler = new Handler(Looper.getMainLooper());
+
     /**
      * Logging tag
      */
@@ -87,6 +95,8 @@ public class TransactionsListFragment extends Fragment implements
     private boolean mUseCompactView = false;
 
     private TransactionRecyclerAdapter mTransactionRecyclerAdapter;
+
+    private final TransactionListAdapter transactionListAdapter = new TransactionListAdapter();
     @BindView(R.id.transaction_recycler_view)
     EmptyRecyclerView mRecyclerView;
 
@@ -141,7 +151,7 @@ public class TransactionsListFragment extends Fragment implements
         aBar.setDisplayHomeAsUpEnabled(true);
 
         mTransactionRecyclerAdapter = new TransactionRecyclerAdapter(null);
-        mRecyclerView.setAdapter(mTransactionRecyclerAdapter);
+        mRecyclerView.setAdapter(transactionListAdapter);
 
         setHasOptionsMenu(true);
     }
@@ -162,7 +172,27 @@ public class TransactionsListFragment extends Fragment implements
      */
     @Override
     public void refresh() {
-        getLoaderManager().restartLoader(0, null, this);
+//        getLoaderManager().restartLoader(0, null, this);
+
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                var allTransactions = mTransactionsDbAdapter.getAllTransactions();
+                var mappedTransactions = allTransactions.stream().map(t -> new TransactionViewModel(
+                        t,
+                        mAccountUID,
+                        true
+                )).collect(Collectors.toList());
+
+                handler.post(() -> {
+                    transactionListAdapter.submitList(mappedTransactions);
+                });
+            }
+        });
+
+
+
     }
 
     @Override
