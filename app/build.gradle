@@ -3,6 +3,7 @@ import java.text.SimpleDateFormat
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android'
 
 def versionMajor = 2
 def versionMinor = 4
@@ -170,6 +171,8 @@ afterEvaluate {
 def androidSupportVersion = "27.1.1"
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.21"
 
     implementation(
             'androidx.appcompat:appcompat:1.6.1',
