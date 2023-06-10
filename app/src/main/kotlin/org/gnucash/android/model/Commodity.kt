@@ -41,15 +41,11 @@ class Commodity(
      */
     var cusip: String? = null
     var localSymbol: String? = ""
+
     /**
-     * Returns the smallest fraction supported by the commodity as a power of 10.
+     * The smallest fraction supported by the commodity as a power of 10.
      *
      * i.e. for commodities with no fractions, 1 is returned, for commodities with 2 fractions, 100 is returned
-     *
-     * @return Smallest fraction as power of 10
-     */
-    /**
-     * Sets the smallest fraction for the commodity.
      *
      * The fraction is a power of 10. So commodities with 2 fraction digits, have fraction of 10^2 = 100.<br></br>
      * If the parameter is any other value, a default fraction of 100 will be set

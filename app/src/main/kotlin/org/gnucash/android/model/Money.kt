@@ -38,11 +38,6 @@ import java.util.Locale
  */
 class Money : Comparable<Money> {
     /**
-     * Returns the commodity used by the Money
-     *
-     * @return Instance of commodity
-     */
-    /**
      * Currency of the account
      */
     var commodity: Commodity? = null
@@ -217,18 +212,14 @@ class Money : Comparable<Money> {
     fun asString(): String {
         return toPlainString()
     }
+
     /**
      * Returns a string representation of the Money object formatted according to
      * the `locale` and includes the currency symbol.
      * The output precision is limited to the number of fractional digits supported by the currency
      *
-     * @param locale Locale to use when formatting the object
+     * @param locale Locale to use when formatting the object. Defaults to Locale.getDefault().
      * @return String containing formatted Money representation
-     */
-    /**
-     * Equivalent to calling formattedString(Locale.getDefault())
-     *
-     * @return String formatted Money representation in default locale
      */
     @JvmOverloads
     fun formattedString(locale: Locale = Locale.getDefault()): String {

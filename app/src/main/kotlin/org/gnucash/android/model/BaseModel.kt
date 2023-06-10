@@ -34,25 +34,14 @@ abstract class BaseModel {
      * @see .setUID
      */
     private var mUID: String? = null
+
     /**
-     * 8
-     * Returns the timestamp when this model entry was created in the database
-     *
-     * @return Timestamp of creation of model
+     * The timestamp when this model entry was created in the database.
      */
+    var createdTimestamp: Timestamp = TimestampHelper.getTimestampFromNow()
+
     /**
-     * Sets the timestamp when the model was created
-     *
-     * @param createdTimestamp Timestamp of model creation
-     */
-    var createdTimestamp: Timestamp
-    /**
-     * Returns the timestamp when the model record in the database was last modified.
-     *
-     * @return Timestamp of last modification
-     */
-    /**
-     * Sets the timestamp when the model was last modified in the database
+     * The timestamp when the model was last modified in the database
      *
      * Although the database automatically has triggers for entering the timestamp,
      * when SQL INSERT OR REPLACE syntax is used, it is possible to override the modified timestamp.
@@ -60,27 +49,13 @@ abstract class BaseModel {
      *
      * @param modifiedTimestamp Timestamp of last modification
      */
-    var modifiedTimestamp: Timestamp
+    var modifiedTimestamp: Timestamp = TimestampHelper.getTimestampFromNow()
 
     /**
-     * Initializes the model attributes.
+     * A unique string identifier for this model instance.
      *
-     * A GUID for this model is not generated in the constructor.
-     * A unique ID will be generated on demand with a call to [.getUID]
-     */
-    init {
-        createdTimestamp = TimestampHelper.getTimestampFromNow()
-        modifiedTimestamp = TimestampHelper.getTimestampFromNow()
-    }
-    /**
-     * Returns a unique string identifier for this model instance
-     *
-     * @return GUID for this model
-     */
-    /**
-     * Sets the GUID of the model.
-     *
-     * A new GUID can be generated with a call to [.generateUID]
+     * A new GUID can be generated with a call to [.generateUID] (and it will if the field was not
+     * previously initialized).
      *
      * @param uid String unique ID
      */

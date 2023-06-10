@@ -40,42 +40,19 @@ class Account : BaseModel {
     enum class OfxAccountType {
         CHECKING, SAVINGS, MONEYMRKT, CREDITLINE
     }
-    /**
-     * Returns the name of the account
-     *
-     * @return String containing name of the account
-     */
+
     /**
      * Name of this account
      */
     var name: String? = null
         private set
-    /**
-     * Returns the full name of this account.
-     * The full name is the full account hierarchy name
-     *
-     * @return Fully qualified name of the account
-     */
-    /**
-     * Sets the fully qualified name of the account
-     *
-     * @param fullName Fully qualified account name
-     */
+
     /**
      * Fully qualified name of this account including the parent hierarchy.
      * On instantiation of an account, the full name is set to the name by default
      */
     var fullName: String?
-    /**
-     * Returns the account description
-     *
-     * @return String with description
-     */
-    /**
-     * Sets the account description
-     *
-     * @param description Account description
-     */
+
     /**
      * Account description
      */
@@ -85,17 +62,7 @@ class Account : BaseModel {
      * Commodity used by this account
      */
     private var mCommodity: Commodity? = null
-    /**
-     * Get the type of account
-     *
-     * @return [AccountType] type of account
-     */
-    /**
-     * Sets the type of account
-     *
-     * @param mAccountType Type of account
-     * @see AccountType
-     */
+
     /**
      * Type of account
      * Defaults to [AccountType.CASH]
@@ -233,20 +200,19 @@ class Account : BaseModel {
             }
             return balance
         }
+
     /**
-     * Returns the color of the account.
-     *
-     * @return Color of the account as an int as returned by [Color].
-     */
-    /**
-     * Sets the color of the account.
-     *
-     * @param color Color as an int as returned by [Color].
-     * @throws java.lang.IllegalArgumentException if the color is transparent,
-     * which is not supported.
+     * The color of the account.
      */
     var color: Int
         get() = mColor
+        /**
+         * Sets the color of the account.
+         *
+         * @param color Color as an int as returned by [Color].
+         * @throws java.lang.IllegalArgumentException if the color is transparent,
+         * which is not supported.
+         */
         set(color) {
             require(Color.alpha(color) >= 255) { "Transparent colors are not supported: $color" }
             mColor = color
