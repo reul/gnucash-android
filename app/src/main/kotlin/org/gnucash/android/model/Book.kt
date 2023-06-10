@@ -21,7 +21,7 @@ import java.sql.Timestamp
 /**
  * Represents a GnuCash book which is made up of accounts and transactions
  *
- * @author Ngewi Fet <ngewif></ngewif>@gmail.com>
+ * @author Ngewi Fet <ngewif@gmail.com>
  */
 class Book : BaseModel {
     /**

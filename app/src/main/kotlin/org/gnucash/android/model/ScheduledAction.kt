@@ -28,7 +28,7 @@ import java.util.TimeZone
 /**
  * Represents a scheduled event which is stored in the database and run at regular mPeriod
  *
- * @author Ngewi Fet <ngewif></ngewif>@gmail.com>
+ * @author Ngewi Fet <ngewif@gmail.com>
  */
 class ScheduledAction    //all actions are enabled by default
     (
@@ -460,7 +460,7 @@ class ScheduledAction    //all actions are enabled by default
          * @return Scheduled Action
          */
         @JvmStatic
-        @Deprecated("Used for parsing legacy backup files. Use {@link Recurrence} instead")
+        @Deprecated("Used for parsing legacy backup files. Use [Recurrence] instead")
         fun parseScheduledAction(transaction: Transaction, period: Long): ScheduledAction {
             val scheduledAction = ScheduledAction(ActionType.TRANSACTION)
             scheduledAction.actionUID = transaction.uID

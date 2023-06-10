@@ -34,7 +34,7 @@ import java.util.Locale
  * [Locale.US] is supported e.g. "2.45" will be parsed as 2.45 meanwhile
  * "2,45" will be parsed to 245 although that could be a decimal in [Locale.GERMAN]
  *
- * @author Ngewi Fet<ngewif></ngewif>@gmail.com>
+ * @author Ngewi Fet<ngewif@gmail.com>
  */
 class Money : Comparable<Money> {
     /**

@@ -22,7 +22,7 @@ import java.util.Locale
 /**
  * Represents a type of period which can be associated with a recurring event
  *
- * @author Ngewi Fet <ngewif></ngewif>@gmail.com>
+ * @author Ngewi Fet <ngewif@gmail.com>
  * @see org.gnucash.android.model.ScheduledAction
  */
 enum class PeriodType {

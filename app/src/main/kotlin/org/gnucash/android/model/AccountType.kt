@@ -22,11 +22,6 @@ enum class AccountType {
     TRADING,
     ROOT;
     /**
-     * Returns the type of normal balance this account possesses
-     *
-     * @return TransactionType balance of the account type
-     */
-    /**
      * Indicates that this type of normal balance the account type has
      *
      * To increase the value of an account with normal balance of credit, one would credit the account.

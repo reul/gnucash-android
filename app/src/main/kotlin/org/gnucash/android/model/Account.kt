@@ -30,7 +30,7 @@ import java.sql.Timestamp
  * the currency of the Locale of the device on which the software is running. US Dollars is used
  * if the platform locale cannot be determined.
  *
- * @author Ngewi Fet <ngewif></ngewif>@gmail.com>
+ * @author Ngewi Fet <ngewif@gmail.com>
  * @see AccountType
  */
 class Account : BaseModel {

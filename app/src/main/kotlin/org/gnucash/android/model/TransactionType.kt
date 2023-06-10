@@ -18,7 +18,7 @@ package org.gnucash.android.model
 /**
  * Type of transaction, a credit or a debit
  *
- * @author Ngewi Fet <ngewif></ngewif>@gmail.com>
+ * @author Ngewi Fet <ngewif@gmail.com>
  * @author Jesse Shieh <jesse.shieh.pub></jesse.shieh.pub>@gmail.com>
  */
 enum class TransactionType {
