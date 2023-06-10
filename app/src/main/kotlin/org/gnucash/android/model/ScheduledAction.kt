@@ -38,9 +38,9 @@ class ScheduledAction    //all actions are enabled by default
     var actionType: ActionType
 ) : BaseModel() {
 
-    private var mStartDate: Long = 0
+    private var _startDate: Long = 0
 
-    private var mEndDate: Long = 0
+    private var _endDate: Long = 0
 
     /**
      * The tag saves additional information about the scheduled action,
@@ -125,8 +125,8 @@ class ScheduledAction    //all actions are enabled by default
     /**
      * Flag for whether the scheduled transaction should be auto-created
      */
-    private var mAutoCreate = true
-    private var mAutoNotify = false
+    private var _autoCreate = true
+    private var _autoNotify = false
 
     /**
      * Number of days in advance to create the transaction
@@ -154,7 +154,7 @@ class ScheduledAction    //all actions are enabled by default
     val timeOfLastSchedule: Long
         get() {
             if (executionCount == 0) return -1
-            var startTime = LocalDateTime.fromDateFields(Date(mStartDate))
+            var startTime = LocalDateTime.fromDateFields(Date(_startDate))
             val multiplier = recurrence!!.multiplier
             val factor = (executionCount - 1) * multiplier
             startTime = when (recurrence!!.periodType) {
@@ -205,7 +205,7 @@ class ScheduledAction    //all actions are enabled by default
      */
     private fun computeNextScheduledExecutionTimeStartingAt(startTime: Long): Long {
         if (startTime <= 0) { // has never been run
-            return mStartDate
+            return _startDate
         }
         val multiplier = recurrence!!.multiplier
         var nextScheduledExecution = LocalDateTime.fromDateFields(Date(startTime))
@@ -283,9 +283,9 @@ class ScheduledAction    //all actions are enabled by default
      * milliseconds since Epoch
      */
     var startTime: Long
-        get() = mStartDate
+        get() = _startDate
         set(startDate) {
-            mStartDate = startDate
+            _startDate = startDate
             if (recurrence != null) {
                 recurrence!!.periodStart = Timestamp(startDate)
             }
@@ -294,11 +294,11 @@ class ScheduledAction    //all actions are enabled by default
      * The end time of the scheduled action, represented as a timestamp in milliseconds since Epoch.
      */
     var endTime: Long
-        get() = mEndDate
+        get() = _endDate
         set(endDate) {
-            mEndDate = endDate
+            _endDate = endDate
             if (recurrence != null) {
-                recurrence!!.periodEnd = Timestamp(mEndDate)
+                recurrence!!.periodEnd = Timestamp(_endDate)
             }
         }
 
@@ -310,7 +310,7 @@ class ScheduledAction    //all actions are enabled by default
      * @return `true` if the transaction should be auto-created, `false` otherwise
      */
     fun shouldAutoCreate(): Boolean {
-        return mAutoCreate
+        return _autoCreate
     }
 
     /**
@@ -321,7 +321,7 @@ class ScheduledAction    //all actions are enabled by default
      * @param autoCreate Flag for auto creating transactions
      */
     fun setAutoCreate(autoCreate: Boolean) {
-        mAutoCreate = autoCreate
+        _autoCreate = autoCreate
     }
 
     /**
@@ -332,7 +332,7 @@ class ScheduledAction    //all actions are enabled by default
      * @return `true` if user will be notified, `false` otherwise
      */
     fun shouldAutoNotify(): Boolean {
-        return mAutoNotify
+        return _autoNotify
     }
 
     /**
@@ -343,11 +343,11 @@ class ScheduledAction    //all actions are enabled by default
      * @param autoNotify Boolean flag
      */
     fun setAutoNotify(autoNotify: Boolean) {
-        mAutoNotify = autoNotify
+        _autoNotify = autoNotify
     }
 
     /** Backing field for @{link ScheduledAction#templateAccountUID} */
-    private var mTemplateAccountUID: String? = null
+    private var _templateAccountUID: String? = null
     var templateAccountUID: String?
         /**
          * Return the template account GUID for this scheduled action
@@ -356,9 +356,9 @@ class ScheduledAction    //all actions are enabled by default
          *
          * @return String GUID of template account
          */
-        get() = if (mTemplateAccountUID == null) generateUID().also {
-            mTemplateAccountUID = it
-        } else mTemplateAccountUID
+        get() = if (_templateAccountUID == null) generateUID().also {
+            _templateAccountUID = it
+        } else _templateAccountUID
 
         /**
          * Set the template account GUID
@@ -366,7 +366,7 @@ class ScheduledAction    //all actions are enabled by default
          * @param templateAccountUID String GUID of template account
          */
         set(templateAccountUID) {
-            mTemplateAccountUID = templateAccountUID
+            _templateAccountUID = templateAccountUID
         }
 
     /**
@@ -378,7 +378,7 @@ class ScheduledAction    //all actions are enabled by default
         get() {
             val ruleBuilder = StringBuilder(recurrence!!.repeatString)
             val context = GnuCashApplication.getAppContext()
-            if (mEndDate <= 0 && totalPlannedExecutionCount > 0) {
+            if (_endDate <= 0 && totalPlannedExecutionCount > 0) {
                 ruleBuilder.append(", ")
                     .append(context.getString(R.string.repeat_x_times, totalPlannedExecutionCount))
             }
@@ -396,10 +396,10 @@ class ScheduledAction    //all actions are enabled by default
         get() {
             val separator = ";"
             val ruleBuilder = StringBuilder(recurrence!!.ruleString)
-            if (mEndDate > 0) {
+            if (_endDate > 0) {
                 val df = SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'", Locale.US)
                 df.timeZone = TimeZone.getTimeZone("UTC")
-                ruleBuilder.append("UNTIL=").append(df.format(Date(mEndDate))).append(separator)
+                ruleBuilder.append("UNTIL=").append(df.format(Date(_endDate))).append(separator)
             } else if (totalPlannedExecutionCount > 0) {
                 ruleBuilder.append("COUNT=").append(totalPlannedExecutionCount).append(separator)
             }
@@ -435,15 +435,15 @@ class ScheduledAction    //all actions are enabled by default
         this.recurrence = recurrence
         //if we were parsing XML and parsed the start and end date from the scheduled action first,
         //then use those over the values which might be gotten from the recurrence
-        if (mStartDate > 0) {
-            recurrence.periodStart = Timestamp(mStartDate)
+        if (_startDate > 0) {
+            recurrence.periodStart = Timestamp(_startDate)
         } else {
-            mStartDate = recurrence.periodStart.time
+            _startDate = recurrence.periodStart.time
         }
-        if (mEndDate > 0) {
-            recurrence.periodEnd = Timestamp(mEndDate)
+        if (_endDate > 0) {
+            recurrence.periodEnd = Timestamp(_endDate)
         } else if (recurrence.periodEnd != null) {
-            mEndDate = recurrence.periodEnd.time
+            _endDate = recurrence.periodEnd.time
         }
     }
 

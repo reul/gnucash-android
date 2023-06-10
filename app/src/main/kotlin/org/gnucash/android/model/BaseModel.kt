@@ -33,7 +33,7 @@ abstract class BaseModel {
      * @see .getUID
      * @see .setUID
      */
-    private var mUID: String? = null
+    private var _uid: String? = null
 
     /**
      * The timestamp when this model entry was created in the database.
@@ -61,13 +61,13 @@ abstract class BaseModel {
      */
     open var uID: String?
         get() {
-            if (mUID == null) {
-                mUID = generateUID()
+            if (_uid == null) {
+                _uid = generateUID()
             }
-            return mUID
+            return _uid
         }
         set(uid) {
-            mUID = uid
+            _uid = uid
         }
 
     /**

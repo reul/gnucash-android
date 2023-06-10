@@ -61,7 +61,7 @@ class Account : BaseModel {
     /**
      * Commodity used by this account
      */
-    private var mCommodity: Commodity? = null
+    private var _commodity: Commodity? = null
 
     /**
      * Type of account
@@ -72,29 +72,29 @@ class Account : BaseModel {
     /**
      * List of transactions in this account
      */
-    private var mTransactionsList: MutableList<Transaction> = ArrayList()
+    private var _transactionsList: MutableList<Transaction> = ArrayList()
 
     /**
      * Account UID of the parent account. Can be null
      */
-    private var mParentAccountUID: String? = null
+    private var _parentAccountUID: String? = null
 
     /**
      * Save UID of a default account for transfers.
      * All transactions in this account will by default be transfers to the other account
      */
-    private var mDefaultTransferAccountUID: String? = null
+    private var _defaultTransferAccountUID: String? = null
 
     /**
      * Flag for placeholder accounts.
      * These accounts cannot have transactions
      */
-    private var mIsPlaceholderAccount = false
+    private var _isPlaceholderAccount = false
 
     /**
      * Account color field in hex format #rrggbb
      */
-    private var mColor = DEFAULT_COLOR
+    private var _color = DEFAULT_COLOR
     /**
      * Tests if this account is a favorite account or not
      *
@@ -113,7 +113,7 @@ class Account : BaseModel {
     /**
      * Flag which indicates if this account is a hidden account or not
      */
-    private var mIsHidden = false
+    private var _isHidden = false
 
     /**
      * Constructor
@@ -154,8 +154,8 @@ class Account : BaseModel {
      * @param transaction [Transaction] to be added to the account
      */
     fun addTransaction(transaction: Transaction) {
-        transaction.commodity = mCommodity!!
-        mTransactionsList.add(transaction)
+        transaction.commodity = _commodity!!
+        _transactionsList.add(transaction)
     }
 
     /**
@@ -167,7 +167,7 @@ class Account : BaseModel {
      * @param transactionsList List of [Transaction]s to be set.
      */
     fun setTransactions(transactionsList: MutableList<Transaction>) {
-        mTransactionsList = transactionsList
+        _transactionsList = transactionsList
     }
 
     /**
@@ -176,7 +176,7 @@ class Account : BaseModel {
      * @return Array list of transactions for the account
      */
     val transactions: List<Transaction>
-        get() = mTransactionsList
+        get() = _transactionsList
 
     /**
      * Returns the number of transactions in this account
@@ -184,7 +184,7 @@ class Account : BaseModel {
      * @return Number transactions in account
      */
     val transactionCount: Int
-        get() = mTransactionsList.size
+        get() = _transactionsList.size
 
     /**
      * Returns the aggregate of all transactions in this account.
@@ -194,8 +194,8 @@ class Account : BaseModel {
      */
     val balance: Money
         get() {
-            var balance = Money.createZeroInstance(mCommodity!!.currencyCode)
-            for (transaction in mTransactionsList) {
+            var balance = Money.createZeroInstance(_commodity!!.currencyCode)
+            for (transaction in _transactionsList) {
                 balance = balance.add(transaction.getBalance(uID!!))
             }
             return balance
@@ -205,7 +205,7 @@ class Account : BaseModel {
      * The color of the account.
      */
     var color: Int
-        get() = mColor
+        get() = _color
         /**
          * Sets the color of the account.
          *
@@ -215,7 +215,7 @@ class Account : BaseModel {
          */
         set(color) {
             require(Color.alpha(color) >= 255) { "Transparent colors are not supported: $color" }
-            mColor = color
+            _color = color
         }
 
     /**
@@ -224,7 +224,7 @@ class Account : BaseModel {
      * @return Hex color of the account
      */
     val colorHexString: String
-        get() = String.format("#%06X", 0xFFFFFF and mColor)
+        get() = String.format("#%06X", 0xFFFFFF and _color)
 
     /**
      * Sets the color of the account.
@@ -246,9 +246,9 @@ class Account : BaseModel {
      * @param commodity Commodity of the account
      */
     var commodity: Commodity
-        get() = mCommodity!!
+        get() = _commodity!!
         set(value) {
-            mCommodity = value
+            _commodity = value
         }
 
     /**
@@ -257,7 +257,7 @@ class Account : BaseModel {
      * @param parentUID String Unique ID of parent account
      */
     fun setParentUID(parentUID: String?) {
-        mParentAccountUID = parentUID
+        _parentAccountUID = parentUID
     }
 
     /**
@@ -266,7 +266,7 @@ class Account : BaseModel {
      * @return String Unique ID of parent account
      */
     fun getParentUID(): String? {
-        return mParentAccountUID
+        return _parentAccountUID
     }
 
     /**
@@ -275,7 +275,7 @@ class Account : BaseModel {
      * @return `true` if this account is a placeholder account, `false` otherwise
      */
     fun isPlaceholderAccount(): Boolean {
-        return mIsPlaceholderAccount
+        return _isPlaceholderAccount
     }
 
     /**
@@ -286,7 +286,7 @@ class Account : BaseModel {
      * @return `true` if the account is hidden, `false` otherwise.
      */
     fun isHidden(): Boolean {
-        return mIsHidden
+        return _isHidden
     }
 
     /**
@@ -297,7 +297,7 @@ class Account : BaseModel {
      * @param hidden boolean specifying is hidden or not
      */
     fun setHidden(hidden: Boolean) {
-        mIsHidden = hidden
+        _isHidden = hidden
     }
 
     /**
@@ -307,7 +307,7 @@ class Account : BaseModel {
      * @param isPlaceholder Boolean flag indicating if the account is a placeholder account or not
      */
     fun setPlaceHolderFlag(isPlaceholder: Boolean) {
-        mIsPlaceholderAccount = isPlaceholder
+        _isPlaceholderAccount = isPlaceholder
     }
 
     /**
@@ -316,7 +316,7 @@ class Account : BaseModel {
      * @return Unique ID string of default transfer account
      */
     fun getDefaultTransferAccountUID(): String? {
-        return mDefaultTransferAccountUID
+        return _defaultTransferAccountUID
     }
 
     /**
@@ -325,7 +325,7 @@ class Account : BaseModel {
      * @param defaultTransferAccountUID Unique ID string of default transfer account
      */
     fun setDefaultTransferAccountUID(defaultTransferAccountUID: String?) {
-        mDefaultTransferAccountUID = defaultTransferAccountUID
+        _defaultTransferAccountUID = defaultTransferAccountUID
     }
 
     /**
@@ -337,7 +337,7 @@ class Account : BaseModel {
      */
     fun toOfx(doc: Document, parent: Element, exportStartTime: Timestamp?) {
         val currency = doc.createElement(OfxHelper.TAG_CURRENCY_DEF)
-        currency.appendChild(doc.createTextNode(mCommodity!!.currencyCode))
+        currency.appendChild(doc.createTextNode(_commodity!!.currencyCode))
 
         //================= BEGIN BANK ACCOUNT INFO (BANKACCTFROM) =================================
         val bankId = doc.createElement(OfxHelper.TAG_BANK_ID)
@@ -384,7 +384,7 @@ class Account : BaseModel {
         val bankTransactionsList = doc.createElement(OfxHelper.TAG_BANK_TRANSACTION_LIST)
         bankTransactionsList.appendChild(dtstart)
         bankTransactionsList.appendChild(dtend)
-        for (transaction in mTransactionsList) {
+        for (transaction in _transactionsList) {
             if (transaction.modifiedTimestamp.before(exportStartTime)) continue
             bankTransactionsList.appendChild(transaction.toOFX(doc, uID!!))
         }

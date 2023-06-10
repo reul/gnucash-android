@@ -46,7 +46,7 @@ class Money : Comparable<Money> {
     /**
      * Amount value held by this object
      */
-    private var mAmount: BigDecimal? = null
+    private var _amount: BigDecimal? = null
 
     /**
      * Rounding mode to be applied when performing operations
@@ -87,7 +87,7 @@ class Money : Comparable<Money> {
      * @param currencyCode 3-character currency code string
      */
     constructor(numerator: Long, denominator: Long, currencyCode: String) {
-        mAmount = getBigDecimal(numerator, denominator)
+        _amount = getBigDecimal(numerator, denominator)
         setCommodity(currencyCode)
     }
 
@@ -110,7 +110,7 @@ class Money : Comparable<Money> {
      * @return [Money] object with same value as current object, but with new `currency`
      */
     fun withCurrency(commodity: Commodity): Money {
-        return Money(mAmount, commodity)
+        return Money(_amount, commodity)
     }
 
     /**
@@ -142,11 +142,11 @@ class Money : Comparable<Money> {
      */
     val numerator: Long
         get() = try {
-            mAmount!!.scaleByPowerOfTen(scale).longValueExact()
+            _amount!!.scaleByPowerOfTen(scale).longValueExact()
         } catch (e: ArithmeticException) {
             val msg = "Currency " + commodity!!.currencyCode +
                     " with scale " + scale +
-                    " has amount " + mAmount.toString()
+                    " has amount " + _amount.toString()
             FirebaseCrashlytics.getInstance().log(msg)
             Log.e(javaClass.name, msg)
             throw e
@@ -176,7 +176,7 @@ class Money : Comparable<Money> {
         private get() {
             var scale = commodity!!.smallestFractionDigits
             if (scale < 0) {
-                scale = mAmount!!.scale()
+                scale = _amount!!.scale()
             }
             if (scale < 0) {
                 scale = 0
@@ -192,7 +192,7 @@ class Money : Comparable<Money> {
      * @return [BigDecimal] valure of amount in object
      */
     fun asBigDecimal(): BigDecimal {
-        return mAmount!!.setScale(commodity!!.smallestFractionDigits, RoundingMode.HALF_EVEN)
+        return _amount!!.setScale(commodity!!.smallestFractionDigits, RoundingMode.HALF_EVEN)
     }
 
     /**
@@ -201,7 +201,7 @@ class Money : Comparable<Money> {
      * @return Double value of the amount in the object
      */
     fun asDouble(): Double {
-        return mAmount!!.toDouble()
+        return _amount!!.toDouble()
     }
 
     /**
@@ -254,7 +254,7 @@ class Money : Comparable<Money> {
      * @return Negated `Money` object
      */
     fun negate(): Money {
-        return Money(mAmount!!.negate(), commodity)
+        return Money(_amount!!.negate(), commodity)
     }
 
     /**
@@ -263,7 +263,7 @@ class Money : Comparable<Money> {
      * @param amount [BigDecimal] amount to be set
      */
     private fun setAmount(amount: BigDecimal) {
-        mAmount = amount.setScale(commodity!!.smallestFractionDigits, ROUNDING_MODE)
+        _amount = amount.setScale(commodity!!.smallestFractionDigits, ROUNDING_MODE)
     }
 
     /**
@@ -276,7 +276,7 @@ class Money : Comparable<Money> {
      */
     fun add(addend: Money): Money {
         if (!commodity!!.equals(addend.commodity)) throw CurrencyMismatchException()
-        val bigD = mAmount!!.add(addend.mAmount)
+        val bigD = _amount!!.add(addend._amount)
         return Money(bigD, commodity)
     }
 
@@ -291,7 +291,7 @@ class Money : Comparable<Money> {
      */
     fun subtract(subtrahend: Money): Money {
         if (!commodity!!.equals(subtrahend.commodity)) throw CurrencyMismatchException()
-        val bigD = mAmount!!.subtract(subtrahend.mAmount)
+        val bigD = _amount!!.subtract(subtrahend._amount)
         return Money(bigD, commodity)
     }
 
@@ -309,7 +309,7 @@ class Money : Comparable<Money> {
     fun divide(divisor: Money): Money {
         if (!commodity!!.equals(divisor.commodity)) throw CurrencyMismatchException()
         val bigD =
-            mAmount!!.divide(divisor.mAmount, commodity!!.smallestFractionDigits, ROUNDING_MODE)
+            _amount!!.divide(divisor._amount, commodity!!.smallestFractionDigits, ROUNDING_MODE)
         return Money(bigD, commodity)
     }
 
@@ -335,7 +335,7 @@ class Money : Comparable<Money> {
      */
     fun multiply(money: Money): Money {
         if (!commodity!!.equals(money.commodity)) throw CurrencyMismatchException()
-        val bigD = mAmount!!.multiply(money.mAmount)
+        val bigD = _amount!!.multiply(money._amount)
         return Money(bigD, commodity)
     }
 
@@ -361,7 +361,7 @@ class Money : Comparable<Money> {
      * @return Money object whose value is the product of this objects values and `multiplier`
      */
     fun multiply(multiplier: BigDecimal): Money {
-        return Money(mAmount!!.multiply(multiplier), commodity)
+        return Money(_amount!!.multiply(multiplier), commodity)
     }
 
     /**
@@ -370,7 +370,7 @@ class Money : Comparable<Money> {
      * @return `true` if the amount is negative, `false` otherwise.
      */
     val isNegative: Boolean
-        get() = mAmount!!.compareTo(BigDecimal.ZERO) == -1
+        get() = _amount!!.compareTo(BigDecimal.ZERO) == -1
 
     /**
      * Returns the string representation of the amount (without currency) of the Money object.
@@ -382,7 +382,7 @@ class Money : Comparable<Money> {
      * @return String representation of the amount (without currency) of the Money object
      */
     fun toPlainString(): String {
-        return mAmount!!.setScale(commodity!!.smallestFractionDigits, ROUNDING_MODE).toPlainString()
+        return _amount!!.setScale(commodity!!.smallestFractionDigits, ROUNDING_MODE).toPlainString()
     }
 
     /**
@@ -407,7 +407,7 @@ class Money : Comparable<Money> {
     override fun hashCode(): Int {
         val prime = 31
         var result = 1
-        result = prime * result + mAmount.hashCode()
+        result = prime * result + _amount.hashCode()
         result = prime * result + commodity.hashCode()
         return result
     }
@@ -424,13 +424,13 @@ class Money : Comparable<Money> {
         if (obj == null) return false
         if (javaClass != obj.javaClass) return false
         val other = obj as Money
-        if (mAmount != other.mAmount) return false
+        if (_amount != other._amount) return false
         return if (!commodity!!.equals(other.commodity)) false else true
     }
 
     override fun compareTo(another: Money): Int {
         if (!commodity!!.equals(another.commodity)) throw CurrencyMismatchException()
-        return mAmount!!.compareTo(another.mAmount)
+        return _amount!!.compareTo(another._amount)
     }
 
     /**
@@ -439,7 +439,7 @@ class Money : Comparable<Money> {
      * @return Money object with absolute value of this instance
      */
     fun abs(): Money {
-        return Money(mAmount!!.abs(), commodity)
+        return Money(_amount!!.abs(), commodity)
     }
 
     /**
@@ -448,7 +448,7 @@ class Money : Comparable<Money> {
      * @return `true` if this money amount is zero, `false` otherwise
      */
     val isAmountZero: Boolean
-        get() = mAmount!!.compareTo(BigDecimal.ZERO) == 0
+        get() = _amount!!.compareTo(BigDecimal.ZERO) == 0
 
     inner class CurrencyMismatchException : IllegalArgumentException() {
         override val message: String
