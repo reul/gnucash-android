@@ -361,7 +361,7 @@ public class AccountsDbAdapterTest {
 
         List<Account> accounts = mAccountsDbAdapter.getAllRecords();
         assertThat(accounts).hasSize(3);
-        assertThat(accounts).extracting("mUID").contains(uid);
+        assertThat(accounts).extracting("_uid").contains(uid);
     }
 
     @Test
