@@ -47,11 +47,6 @@ class ScheduledAction    //all actions are enabled by default
      * e.g. such as export parameters for scheduled backups
      */
     var tag: String? = null
-    /**
-     * Return GUID of recurrence pattern for this scheduled action
-     *
-     * @return [Recurrence] object
-     */
 
     /**
      * Recurrence of this scheduled action
@@ -84,39 +79,10 @@ class ScheduledAction    //all actions are enabled by default
     var isEnabled = true
 
     /**
-     * Returns the type of action to be performed by this scheduled action
-     *
-     * @return ActionType of the scheduled action
-     */
-    /**
-     * Sets the [ActionType]
-     *
-     * @param actionType Type of action
-     */
-    /**
-     * Returns the total number of planned occurrences of this scheduled action.
-     *
-     * @return Total number of planned occurrences of this action
-     */
-    /**
-     * Sets the number of occurences of this action
-     *
-     * @param plannedExecutions Number of occurences
-     */
-    /**
      * Number of times this event is planned to be executed
      */
     var totalPlannedExecutionCount = 0
-    /**
-     * Returns how many times this scheduled action has already been executed
-     *
-     * @return Number of times this action has been executed
-     */
-    /**
-     * Sets the number of times this scheduled action has been executed
-     *
-     * @param executionCount Number of executions
-     */
+
     /**
      * How many times this action has already been executed
      */
@@ -290,6 +256,7 @@ class ScheduledAction    //all actions are enabled by default
                 recurrence!!.periodStart = Timestamp(startDate)
             }
         }
+
     /**
      * The end time of the scheduled action, represented as a timestamp in milliseconds since Epoch.
      */
@@ -359,7 +326,6 @@ class ScheduledAction    //all actions are enabled by default
         get() = if (_templateAccountUID == null) generateUID().also {
             _templateAccountUID = it
         } else _templateAccountUID
-
         /**
          * Set the template account GUID
          *

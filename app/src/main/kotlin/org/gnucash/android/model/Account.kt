@@ -95,18 +95,9 @@ class Account : BaseModel {
      * Account color field in hex format #rrggbb
      */
     private var _color = DEFAULT_COLOR
+
     /**
-     * Tests if this account is a favorite account or not
-     *
-     * @return `true` if account is flagged as favorite, `false` otherwise
-     */
-    /**
-     * Toggles the favorite flag on this account on or off
-     *
-     * @param isFavorite `true` if account should be flagged as favorite, `false` otherwise
-     */
-    /**
-     * Flag which marks this account as a favorite account
+     * `true` if this account is flagged as a favorite account, `false` if not
      */
     var isFavorite = false
 
@@ -237,13 +228,10 @@ class Account : BaseModel {
     fun setColor(colorCode: String) {
         color = Color.parseColor(colorCode)
     }
+
+    //todo: should we also change commodity of transactions? Transactions can have splits from different accounts
     /**
-     * Return the commodity for this account
-     *///todo: should we also change commodity of transactions? Transactions can have splits from different accounts
-    /**
-     * Sets the commodity of this account
-     *
-     * @param commodity Commodity of the account
+     * The commodity for this account
      */
     var commodity: Commodity
         get() = _commodity!!

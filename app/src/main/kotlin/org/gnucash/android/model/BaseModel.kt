@@ -47,25 +47,32 @@ abstract class BaseModel {
      * when SQL INSERT OR REPLACE syntax is used, it is possible to override the modified timestamp.
      * <br></br>In that case, it has to be explicitly set in the SQL statement.
      *
-     * @param modifiedTimestamp Timestamp of last modification
      */
     var modifiedTimestamp: Timestamp = TimestampHelper.getTimestampFromNow()
 
     /**
      * A unique string identifier for this model instance.
-     *
-     * A new GUID can be generated with a call to [.generateUID] (and it will if the field was not
-     * previously initialized).
-     *
-     * @param uid String unique ID
      */
     open var uID: String?
+        /**
+         * Returns the unique string identifier for this model instance.
+         *
+         * A new GUID can be generated with a call to [generateUID] (and it will if the field was not
+         * previously initialized).
+         *
+         * @return [uID] String unique ID
+         */
         get() {
             if (_uid == null) {
                 _uid = generateUID()
             }
             return _uid
         }
+        /**
+         * Sets the unique string identifier for this model instance.
+         *
+         * @param uid String unique ID
+         */
         set(uid) {
             _uid = uid
         }
