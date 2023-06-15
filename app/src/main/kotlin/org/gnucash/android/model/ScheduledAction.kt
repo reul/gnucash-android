@@ -265,7 +265,7 @@ class ScheduledAction    //all actions are enabled by default
         set(endDate) {
             _endDate = endDate
             if (recurrence != null) {
-                recurrence!!.periodEnd = Timestamp(_endDate)
+                recurrence!!.setPeriodEnd(Timestamp(_endDate))
             }
         }
 
@@ -407,9 +407,12 @@ class ScheduledAction    //all actions are enabled by default
             _startDate = recurrence.periodStart.time
         }
         if (_endDate > 0) {
-            recurrence.periodEnd = Timestamp(_endDate)
-        } else if (recurrence.periodEnd != null) {
-            _endDate = recurrence.periodEnd.time
+            recurrence.setPeriodEnd(Timestamp(_endDate))
+        } else {
+            val periodEnd = recurrence.periodEnd
+            if (periodEnd != null) {
+                _endDate = periodEnd.time
+            }
         }
     }
 
