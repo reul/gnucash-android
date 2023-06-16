@@ -118,15 +118,6 @@ class Recurrence(periodType: PeriodType) : BaseModel() {
             return repeatBuilder.toString()
         }
 
-//        =======================================================================
-//This section complies with the formal rules, but the betterpickers library doesn't like/need it
-//        SimpleDateFormat startDateFormat = new SimpleDateFormat("'TZID'=zzzz':'yyyyMMdd'T'HHmmss", Locale.US);
-//        ruleBuilder.append("DTSTART;");
-//        ruleBuilder.append(startDateFormat.format(new Date(mStartDate)));
-//            ruleBuilder.append("\n");
-//        ruleBuilder.append("RRULE:");
-//        ========================================================================
-
     /**
      * Creates an RFC 2445 string which describes this recurring event.
      *
@@ -240,6 +231,7 @@ class Recurrence(periodType: PeriodType) : BaseModel() {
         }
         return "Period $periodNum"
     }
+
     /**
      * The days of week on which to run the recurrence.
      *
@@ -251,25 +243,7 @@ class Recurrence(periodType: PeriodType) : BaseModel() {
         get() = Collections.unmodifiableList(_byDays)
         set(byDays) {
             _byDays = ArrayList(byDays)
-        }/*
-        //this solution does not use looping, but is not very accurate
-
-        int multiplier = mMultiplier;
-        LocalDateTime startDate = new LocalDateTime(mPeriodStart.getTime());
-        LocalDateTime endDate = new LocalDateTime(mPeriodEnd.getTime());
-        switch (mPeriodType){
-            case DAY:
-                return Days.daysBetween(startDate, endDate).dividedBy(multiplier).getDays();
-            case WEEK:
-                return Weeks.weeksBetween(startDate, endDate).dividedBy(multiplier).getWeeks();
-            case MONTH:
-                return Months.monthsBetween(startDate, endDate).dividedBy(multiplier).getMonths();
-            case YEAR:
-                return Years.yearsBetween(startDate, endDate).dividedBy(multiplier).getYears();
-            default:
-                return -1;
         }
-*/
 
     /**
      * Computes the number of occurrences of this recurrences between start and end date
