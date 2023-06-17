@@ -66,21 +66,12 @@ class Budget : BaseModel {
         this.name = name
     }
     /**
-     * Returns the description of the budget
-     *
-     * @return String description of budget
-     */
-    /**
-     * Sets the description of the budget
-     *
-     * @param description String description
+     * A description of the budget
      */
     var description: String? = null
 
     /**
-     * Returns the recurrence for this budget
-     *
-     * @return Recurrence object for this budget
+     * The recurrence for this budget
      */
     var recurrence: Recurrence? = null
         private set
@@ -183,14 +174,7 @@ class Budget : BaseModel {
             return sum
         }
     /**
-     * Returns the number of periods covered by this budget
-     *
-     * @return Number of periods
-     */
-    /**
-     * Sets the number of periods for the budget
-     *
-     * @param numberOfPeriods Number of periods as long
+     * The number of periods covered by this budget
      */
     var numberOfPeriods: Long = 12 //default to 12 periods per year
 
