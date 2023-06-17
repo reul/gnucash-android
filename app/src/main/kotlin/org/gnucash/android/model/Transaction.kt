@@ -145,10 +145,8 @@ class Transaction : BaseModel {
     }
 
     /**
-     * Set the GUID of the transaction
+     * The GUID of the transaction
      * If the transaction has Splits, their transactionGUID will be updated as well
-     *
-     * @param uid String unique ID
      */
     override var uID: String?
         get() = super.uID
@@ -233,16 +231,16 @@ class Transaction : BaseModel {
      * @return Money imbalance of the transaction or zero if it is a multi-currency transaction
      */
     private val imbalance: Money
-        private get() {
+        get() {
             var imbalance = createZeroInstance(_commodity!!.currencyCode)
             for (split in _splitList) {
-                if (!split.quantity.commodity!!.equals(_commodity)) {
+                if (split.quantity!!.commodity!! != _commodity) {
                     // this may happen when importing XML exported from GNCA before 2.0.0
                     // these transactions should only be imported from XML exported from GNC desktop
                     // so imbalance split should not be generated for them
                     return createZeroInstance(_commodity!!.currencyCode)
                 }
-                val amount = split.value
+                val amount = split.value!!
                 imbalance =
                     if (split.type === TransactionType.DEBIT) imbalance.subtract(amount) else imbalance.add(
                         amount
@@ -330,7 +328,7 @@ class Transaction : BaseModel {
         val name = doc.createElement(OfxHelper.TAG_NAME)
         name.appendChild(doc.createTextNode(_description))
         transactionNode.appendChild(name)
-        if (note != null && note!!.length > 0) {
+        if (note != null && note!!.isNotEmpty()) {
             val memo = doc.createElement(OfxHelper.TAG_MEMO)
             memo.appendChild(doc.createTextNode(note))
             transactionNode.appendChild(memo)
@@ -339,7 +337,7 @@ class Transaction : BaseModel {
             var transferAccountUID = accountUID
             for (split in _splitList) {
                 if (split.accountUID != accountUID) {
-                    transferAccountUID = split.accountUID
+                    transferAccountUID = split.accountUID!!
                     break
                 }
             }
@@ -396,9 +394,8 @@ class Transaction : BaseModel {
          * This value should typically be set by calling [TransactionType.name]
          *
          */
-        @JvmField
         @Deprecated("use {@link Split}s instead")
-        val EXTRA_TRANSACTION_TYPE = "org.gnucash.android.extra.transaction_type"
+        const val EXTRA_TRANSACTION_TYPE = "org.gnucash.android.extra.transaction_type"
 
         /**
          * Argument key for passing splits as comma-separated multi-line list and each line is a split.
@@ -427,11 +424,10 @@ class Transaction : BaseModel {
             var balance = createZeroInstance(accountCurrencyCode)
             for (split in splitList) {
                 if (split.accountUID != accountUID) continue
-                var amount: Money?
-                amount = if (split.value.commodity!!.currencyCode == accountCurrencyCode) {
-                    split.value
+                val amount: Money = if (split.value!!.commodity!!.currencyCode == accountCurrencyCode) {
+                    split.value!!
                 } else { //if this split belongs to the account, then either its value or quantity is in the account currency
-                    split.quantity
+                    split.quantity!!
                 }
                 val isDebitSplit = split.type === TransactionType.DEBIT
                 balance = if (isDebitAccount) {
@@ -464,8 +460,7 @@ class Transaction : BaseModel {
             accountType: AccountType,
             shouldReduceBalance: Boolean
         ): TransactionType {
-            val type: TransactionType
-            type = if (accountType.hasDebitNormalBalance()) {
+            val type: TransactionType = if (accountType.hasDebitNormalBalance()) {
                 if (shouldReduceBalance) TransactionType.CREDIT else TransactionType.DEBIT
             } else {
                 if (shouldReduceBalance) TransactionType.DEBIT else TransactionType.CREDIT
