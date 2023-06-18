@@ -796,11 +796,11 @@ public class TransactionsActivityTest {
 
         //the crux of the test. All splits should now have value and quantity of USD $10
         List<Split> allSplits = singleCurrencyTrn.getSplits();
-        assertThat(allSplits).extracting("mAccountUID")
+        assertThat(allSplits).extracting("accountUID")
                 .contains(mTransferAccount.getUID())
                 .doesNotContain(euroAccount.getUID());
-        assertThat(allSplits).extracting("mValue").contains(expectedValue).doesNotContain(expectedQty);
-        assertThat(allSplits).extracting("mQuantity").contains(expectedValue).doesNotContain(expectedQty);
+        assertThat(allSplits).extracting("value").contains(expectedValue).doesNotContain(expectedQty);
+        assertThat(allSplits).extracting("_quantity").contains(expectedValue).doesNotContain(expectedQty);
     }
 
     /**
