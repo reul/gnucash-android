@@ -24,7 +24,7 @@ import java.math.BigDecimal
 /**
  * Budgets model
  *
- * @author Ngewi Fet <ngewif></ngewif>@gmail.com>
+ * @author Ngewi Fet <ngewif@gmail.com>
  */
 class Budget : BaseModel {
     /**
@@ -144,7 +144,7 @@ class Budget : BaseModel {
             }
         }
         return zeroInstance
-    }//we explicitly allow this null instead of a money instance, because this method should never return null for a budget
+    }
 
     /**
      * Returns the sum of all budget amounts in this budget
@@ -156,7 +156,8 @@ class Budget : BaseModel {
     val amountSum: Money?
         get() {
             var sum: Money? =
-                null //we explicitly allow this null instead of a money instance, because this method should never return null for a budget
+                null //we explicitly allow this null instead of a money instance,
+                     // because this method should never return null for a budget
             for (budgetAmount in _budgetAmounts) {
                 if (sum == null) {
                     sum = budgetAmount.amount
@@ -279,13 +280,15 @@ class Budget : BaseModel {
         }//if not all amounts are the same, then just add them as we read them
 
     /**
-     * Returns the list of budget amounts where only one BudgetAmount is present if the amount of the budget amount
-     * is the same for all periods in the budget.
+     * Returns the list of budget amounts where only one BudgetAmount is present if the amount of
+     * the budget amount is the same for all periods in the budget.
      * BudgetAmounts with different amounts per period are still return separately
      *
      *
-     * This method is used during import because GnuCash desktop saves one BudgetAmount per period for the whole budgeting period.
-     * While this can be easily displayed in a table form on the desktop, it is not feasible in the Android app.
+     * This method is used during import because GnuCash desktop saves one BudgetAmount per period
+     * for the whole budgeting period.
+     * While this can be easily displayed in a table form on the desktop, it is not feasible in the
+     * Android app.
      * So we display only one BudgetAmount if it covers all periods in the budgeting period
      *
      *
@@ -294,24 +297,30 @@ class Budget : BaseModel {
     val compactedBudgetAmounts: List<BudgetAmount>
         get() {
             val accountAmountMap: MutableMap<String?, MutableList<BigDecimal>> = HashMap()
+
             for (budgetAmount in _budgetAmounts) {
                 val accountUID = budgetAmount.accountUID
                 val amount = budgetAmount.amount!!.asBigDecimal()
+
                 if (accountAmountMap.containsKey(accountUID)) {
                     accountAmountMap[accountUID]!!.add(amount)
+
                 } else {
                     val amounts: MutableList<BigDecimal> = ArrayList()
                     amounts.add(amount)
                     accountAmountMap[accountUID] = amounts
                 }
             }
+
             val compactBudgetAmounts: MutableList<BudgetAmount> = ArrayList()
+
             for ((key, amounts) in accountAmountMap) {
                 val first = amounts[0]
                 var allSame = true
                 for (bigDecimal in amounts) {
                     allSame = allSame and (bigDecimal == first)
                 }
+
                 if (allSame) {
                     if (amounts.size == 1) {
                         for (bgtAmount in _budgetAmounts) {
@@ -320,12 +329,14 @@ class Budget : BaseModel {
                                 break
                             }
                         }
+
                     } else {
                         val bgtAmount = BudgetAmount(uID, key)
                         bgtAmount.setAmount(Money(first, Commodity.DEFAULT_COMMODITY))
                         bgtAmount.periodNum = -1
                         compactBudgetAmounts.add(bgtAmount)
                     }
+
                 } else {
                     //if not all amounts are the same, then just add them as we read them
                     for (bgtAmount in _budgetAmounts) {
@@ -352,10 +363,12 @@ class Budget : BaseModel {
         get() {
             val amountsToAdd: MutableList<BudgetAmount> = ArrayList()
             val amountsToRemove: MutableList<BudgetAmount> = ArrayList()
+
             for (budgetAmount in _budgetAmounts) {
                 if (budgetAmount.periodNum == -1L) {
                     amountsToRemove.add(budgetAmount)
                     val accountUID = budgetAmount.accountUID
+
                     for (period in 0 until numberOfPeriods) {
                         val bgtAmount = BudgetAmount(uID, accountUID)
                         bgtAmount.setAmount(budgetAmount.amount!!)
@@ -364,13 +377,16 @@ class Budget : BaseModel {
                     }
                 }
             }
+
             val expandedBudgetAmounts: MutableList<BudgetAmount> = ArrayList(_budgetAmounts)
             for (bgtAmount in amountsToRemove) {
                 expandedBudgetAmounts.remove(bgtAmount)
             }
+
             for (bgtAmount in amountsToAdd) {
                 expandedBudgetAmounts.add(bgtAmount)
             }
+
             return expandedBudgetAmounts
         }
 }

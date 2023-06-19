@@ -45,7 +45,7 @@ abstract class BaseModel {
      *
      * Although the database automatically has triggers for entering the timestamp,
      * when SQL INSERT OR REPLACE syntax is used, it is possible to override the modified timestamp.
-     * <br></br>In that case, it has to be explicitly set in the SQL statement.
+     * <br />In that case, it has to be explicitly set in the SQL statement.
      *
      */
     var modifiedTimestamp: Timestamp = TimestampHelper.getTimestampFromNow()

@@ -18,7 +18,7 @@ import java.sql.Timestamp
  * balance in the account depends on the type of normal balance of the account
  * and the transaction type of the split (CREDIT/DEBIT).
  *
- * @author Ngewi Fet <ngewif></ngewif>@gmail.com>
+ * @author Ngewi Fet <ngewif@gmail.com>
  */
 class Split : BaseModel, Parcelable {
     /**
@@ -211,7 +211,7 @@ class Split : BaseModel, Parcelable {
      * using [org.gnucash.android.model.Split.parseSplit]
      *
      *
-     * The string is formatted as:<br></br>
+     * The string is formatted as:<br />
      * "&lt;uid&gt;;&lt;valueNum&gt;;&lt;valueDenom&gt;;&lt;valueCurrencyCode&gt;;&lt;quantityNum
      * &gt;;&lt;quantityDenom&gt;;&lt;quantityCurrencyCode&gt;;&lt;transaction_uid&gt;;&lt;
      * account_uid&gt;;&lt;type&gt;;&lt;memo&gt;"
@@ -304,12 +304,15 @@ class Split : BaseModel, Parcelable {
         dest.writeString(accountUID)
         dest.writeString(transactionUID)
         dest.writeString(type!!.name)
+
         dest.writeLong(value!!.numerator)
         dest.writeLong(value!!.denominator)
         dest.writeString(value!!.commodity!!.currencyCode)
+
         dest.writeLong(_quantity!!.numerator)
         dest.writeLong(_quantity!!.denominator)
         dest.writeString(_quantity!!.commodity!!.currencyCode)
+
         dest.writeString(if (memo == null) "" else memo)
         dest.writeString(reconcileState.toString())
         dest.writeString(reconcileDate.toString())
@@ -326,14 +329,17 @@ class Split : BaseModel, Parcelable {
         accountUID = source.readString()
         transactionUID = source.readString()
         type = TransactionType.valueOf(source.readString()!!)
+
         val valueNum = source.readLong()
         val valueDenom = source.readLong()
         val valueCurrency = source.readString()
         value = Money(valueNum, valueDenom, valueCurrency!!).abs()
+
         val qtyNum = source.readLong()
         val qtyDenom = source.readLong()
         val qtyCurrency = source.readString()
         _quantity = Money(qtyNum, qtyDenom, qtyCurrency!!).abs()
+
         val memo = source.readString()
         this.memo = if (memo!!.isEmpty()) null else memo
         reconcileState = source.readString()!![0]
@@ -392,17 +398,17 @@ class Split : BaseModel, Parcelable {
         }
 
         /**
-         * Parses a split which is in the format:<br></br>
-         * "<uid>;<valueNum>;<valueDenom>;<currency_code>;<quantityNum>;<quantityDenom>;<currency_code>;<transaction_uid>;<account_uid>;<type>;<memo>".
+         * Parses a split which is in the format:<br/>
+         * "<uid>;<valueNum>;<valueDenom>;<currency_code>;<quantityNum>;<quantityDenom>;
+         * <currency_code>;<transaction_uid>;<account_uid>;<type>;<memo>".
          *
-         *
-         * Also supports parsing of the deprecated format
+         * <p>Also supports parsing of the deprecated format
          * "<amount>;<currency_code>;<transaction_uid>;<account_uid>;<type>;<memo>".
-         * The split input string is the same produced by the [Split.toCsv] method.</memo></type></account_uid></transaction_uid></currency_code></amount>
+         * The split input string is the same produced by the {@link Split#toCsv()} method.</p>
          *
          * @param splitCsvString String containing formatted split
          * @return Split instance parsed from the string
-        </memo></type></account_uid></transaction_uid></currency_code></quantityDenom></quantityNum></currency_code></valueDenom></valueNum></uid> */
+         */
         @JvmStatic
         fun parseSplit(splitCsvString: String): Split {
             //TODO: parse reconciled state and date

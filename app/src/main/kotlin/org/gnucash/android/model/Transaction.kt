@@ -30,7 +30,7 @@ import java.util.Date
  * Transactions belong to accounts and each have the unique identifier of the account to which they belong.
  * The default type is a debit, unless otherwise specified.
  *
- * @author Ngewi Fet <ngewif></ngewif>@gmail.com>
+ * @author Ngewi Fet <ngewif@gmail.com>
  */
 class Transaction : BaseModel {
     /**
@@ -91,7 +91,7 @@ class Transaction : BaseModel {
      * Creates a new transaction object which is a clone of the parameter.
      *
      * **Note:** The unique ID of the transaction is not cloned if the parameter `generateNewUID`,
-     * is set to false. Otherwise, a new one is generated.<br></br>
+     * is set to false. Otherwise, a new one is generated.<br />
      * The export flag and the template flag are not copied from the old transaction to the new.
      *
      * @param transaction    Transaction to be cloned
@@ -221,9 +221,6 @@ class Transaction : BaseModel {
         return computeBalance(accountUID, _splitList)
     }
 
-    // this may happen when importing XML exported from GNCA before 2.0.0
-    // these transactions should only be imported from XML exported from GNC desktop
-    // so imbalance split should not be generated for them
     /**
      * Computes the imbalance amount for the given transaction.
      * In double entry, all transactions should resolve to zero. But imbalance occurs when there are unresolved splits.
@@ -305,15 +302,21 @@ class Transaction : BaseModel {
      */
     fun toOFX(doc: Document, accountUID: String): Element {
         val balance = getBalance(accountUID)
-        val transactionType =
-            if (balance.isNegative) TransactionType.DEBIT else TransactionType.CREDIT
+        val transactionType = if (balance.isNegative) {
+            TransactionType.DEBIT
+        } else {
+            TransactionType.CREDIT
+        }
+
         val transactionNode = doc.createElement(OfxHelper.TAG_STATEMENT_TRANSACTION)
         val typeNode = doc.createElement(OfxHelper.TAG_TRANSACTION_TYPE)
         typeNode.appendChild(doc.createTextNode(transactionType.toString()))
         transactionNode.appendChild(typeNode)
+
         val datePosted = doc.createElement(OfxHelper.TAG_DATE_POSTED)
         datePosted.appendChild(doc.createTextNode(OfxHelper.getOfxFormattedTime(timeMillis)))
         transactionNode.appendChild(datePosted)
+
         val dateUser = doc.createElement(OfxHelper.TAG_DATE_USER)
         dateUser.appendChild(
             doc.createTextNode(
@@ -321,20 +324,25 @@ class Transaction : BaseModel {
             )
         )
         transactionNode.appendChild(dateUser)
+
         val amount = doc.createElement(OfxHelper.TAG_TRANSACTION_AMOUNT)
         amount.appendChild(doc.createTextNode(balance.toPlainString()))
         transactionNode.appendChild(amount)
+
         val transID = doc.createElement(OfxHelper.TAG_TRANSACTION_FITID)
         transID.appendChild(doc.createTextNode(uID))
         transactionNode.appendChild(transID)
+
         val name = doc.createElement(OfxHelper.TAG_NAME)
         name.appendChild(doc.createTextNode(_description))
         transactionNode.appendChild(name)
+
         if (note != null && note!!.isNotEmpty()) {
             val memo = doc.createElement(OfxHelper.TAG_MEMO)
             memo.appendChild(doc.createTextNode(note))
             transactionNode.appendChild(memo)
         }
+
         if (_splitList.size == 2) { //if we have exactly one other split, then treat it like a transfer
             var transferAccountUID = accountUID
             for (split in _splitList) {
@@ -345,18 +353,22 @@ class Transaction : BaseModel {
             }
             val bankId = doc.createElement(OfxHelper.TAG_BANK_ID)
             bankId.appendChild(doc.createTextNode(OfxHelper.APP_ID))
+
             val acctId = doc.createElement(OfxHelper.TAG_ACCOUNT_ID)
             acctId.appendChild(doc.createTextNode(transferAccountUID))
+
             val accttype = doc.createElement(OfxHelper.TAG_ACCOUNT_TYPE)
             val acctDbAdapter = AccountsDbAdapter.getInstance()
             val ofxAccountType = convertToOfxAccountType(
                 acctDbAdapter.getAccountType(transferAccountUID)
             )
             accttype.appendChild(doc.createTextNode(ofxAccountType.toString()))
+
             val bankAccountTo = doc.createElement(OfxHelper.TAG_BANK_ACCOUNT_TO)
             bankAccountTo.appendChild(bankId)
             bankAccountTo.appendChild(acctId)
             bankAccountTo.appendChild(accttype)
+
             transactionNode.appendChild(bankAccountTo)
         }
         return transactionNode
@@ -403,7 +415,8 @@ class Transaction : BaseModel {
          * Argument key for passing splits as comma-separated multi-line list and each line is a split.
          * The line format is: <type>;<amount>;<account_uid>
          * The amount should be formatted in the US Locale
-        </account_uid></amount></type> */
+         * account_uid > amount > type
+         */
         const val EXTRA_SPLITS = "org.gnucash.android.extra.transaction.splits"
 
         /**
